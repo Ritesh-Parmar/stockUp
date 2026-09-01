@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@keyframes trading-ticker-scroll {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+}
+
+.trading-ticker {
+  animation: trading-ticker-scroll 18s linear infinite;
+}
+
+/* ═══════════════════════════════════════
+   Custom Editable Spreadsheet Styles
+   ═══════════════════════════════════════ */
+
+/* Header cells */
+.spreadsheet-header-cell {
+  position: relative;
+  padding: 10px 14px;
+  background: #111827;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  border-right: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 2px solid rgba(148, 163, 184, 0.15);
+  user-select: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.spreadsheet-header-cell:hover {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+.spreadsheet-header-text {
+  margin-right: 6px;
+}
+
+.spreadsheet-sort-icon {
+  opacity: 0.4;
+  font-size: 10px;
+  transition: opacity 0.15s;
+}
+
+.spreadsheet-header-cell:hover .spreadsheet-sort-icon {
+  opacity: 0.8;
+}
+
+/* Row number column header */
+.spreadsheet-row-num-header {
+  width: 48px;
+  min-width: 48px;
+  padding: 10px 8px;
+  background: #111827;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  border-right: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 2px solid rgba(148, 163, 184, 0.15);
+  user-select: none;
+}
+
+/* Row number cells */
+.spreadsheet-row-num {
+  width: 48px;
+  min-width: 48px;
+  padding: 0 8px;
+  background: rgba(17, 24, 39, 0.6);
+  color: #475569;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  border-right: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  user-select: none;
+}
+
+/* Rows */
+.spreadsheet-row {
+  transition: background 0.1s ease;
+}
+
+.spreadsheet-row:hover {
+  background: rgba(30, 41, 59, 0.45);
+}
+
+.spreadsheet-row-selected {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+/* Cells */
+.spreadsheet-cell {
+  padding: 0;
+  height: 36px;
+  min-height: 36px;
+  border-right: 1px solid rgba(148, 163, 184, 0.08);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  cursor: cell;
+  position: relative;
+  outline: none;
+  transition: background 0.1s ease;
+}
+
+.spreadsheet-cell:focus {
+  outline: none;
+}
+
+.spreadsheet-cell-selected {
+  outline: 2px solid rgba(251, 191, 36, 0.7) !important;
+  outline-offset: -2px;
+  background: rgba(251, 191, 36, 0.04);
+  z-index: 2;
+}
+
+.spreadsheet-cell-editing {
+  outline: 2px solid rgba(52, 211, 153, 0.85) !important;
+  outline-offset: -2px;
+  background: rgba(52, 211, 153, 0.06);
+  z-index: 3;
+  padding: 0 !important;
+}
+
+/* Cell value display */
+.spreadsheet-cell-value {
+  display: block;
+  padding: 8px 12px;
+  color: #f1f5f9;
+  font-size: 13px;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Cell input for editing */
+.spreadsheet-cell-input {
+  width: 100%;
+  height: 100%;
+  padding: 8px 12px;
+  background: rgba(15, 23, 42, 0.95);
+  color: #f1f5f9;
+  font-size: 13px;
+  line-height: 20px;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.spreadsheet-cell-input::selection {
+  background: rgba(251, 191, 36, 0.35);
+}
+
+/* Delete button column */
+.spreadsheet-delete-cell {
+  width: 44px;
+  min-width: 44px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.spreadsheet-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: transparent;
+  color: #475569;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.spreadsheet-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* Scrollbar styling */
+.spreadsheet-cell::-webkit-scrollbar {
+  display: none;
+}
+
+/* Even/odd row subtle striping */
+.spreadsheet-row:nth-child(even) {
+  background: rgba(15, 23, 42, 0.3);
+}
+
+.spreadsheet-row:nth-child(even):hover {
+  background: rgba(30, 41, 59, 0.45);
+}
+
+.spreadsheet-row-selected:nth-child(even) {
+  background: rgba(30, 41, 59, 0.3);
+}
