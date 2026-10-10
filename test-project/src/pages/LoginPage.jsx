@@ -1,5 +1,5 @@
-import { Navigate, useSearchParams, useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { Navigate, useSearchParams, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/auth'
 import LoginView from '../components/LoginView'
 
 /**
@@ -30,17 +30,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
+    <div className="min-h-screen bg-page flex flex-col">
       {/* Minimal top-bar for the login page */}
-      <header className="h-14 border-b border-slate-800 flex items-center gap-3 px-6 shrink-0">
-        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        <Link
-          to="/dashboard/preview"
-          className="text-sm font-mono font-semibold tracking-widest uppercase text-slate-300 hover:text-emerald-400 transition-colors"
-          title="Open dashboard preview"
-        >
+      <header className="h-14 border-b border-edge flex items-center gap-3 px-6 shrink-0">
+        <div className="w-2 h-2 rounded-full bg-good animate-pulse" />
+        <span className="text-sm font-mono font-semibold tracking-widest uppercase text-ink-2">
           Dashboard
-        </Link>
+        </span>
       </header>
 
       <div className="flex-1 flex items-start justify-center px-4 py-10 overflow-y-auto">

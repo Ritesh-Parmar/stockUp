@@ -10,9 +10,12 @@ export default function SpreadsheetView({ spreadsheet, onClose, onChangeFile, on
   const tableRef = useRef(null)
   const inputRef = useRef(null)
 
-  useEffect(() => {
-    setRowData(spreadsheet.rowData || [])
-  }, [spreadsheet.rowData])
+  // No prop->state sync effect here on purpose. ConfigurePage only renders this
+  // component while `spreadsheet` is non-null and you must pass through the
+  // upload prompt (spreadsheet === null) to load a different file, so it always
+  // remounts and the useState initialiser above is enough. Syncing in an effect
+  // also echoed every local edit straight back through onUpdate, costing an
+  // extra render per keystroke.
 
   // Focus input when editing starts
   useEffect(() => {
@@ -239,39 +242,39 @@ export default function SpreadsheetView({ spreadsheet, onClose, onChangeFile, on
   const displayRows = rowData
 
   return (
-    <div className="flex h-full flex-col rounded-3xl border border-slate-700 bg-slate-900/90 p-4 shadow-xl shadow-slate-950/40">
+    <div className="flex h-full flex-col rounded-3xl border border-edge-strong bg-panel/90 p-4 shadow-xl shadow-shade/20">
       {/* Header toolbar */}
-      <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl bg-slate-950 px-4 py-3 text-slate-100">
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl bg-page px-4 py-3 text-ink">
         <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Spreadsheet</p>
-          <h3 className="text-lg font-semibold text-slate-100">{spreadsheet.fileName}</h3>
+          <p className="text-xs uppercase tracking-[0.35em] text-ink-3">Spreadsheet</p>
+          <h3 className="text-lg font-semibold text-ink">{spreadsheet.fileName}</h3>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={handleAddRow}
-            className="rounded-xl border border-emerald-700/50 bg-emerald-600/20 px-4 py-2 text-sm font-medium text-emerald-400 transition hover:border-emerald-500 hover:bg-emerald-600/30"
+            className="rounded-xl border border-good/50 bg-good/20 px-4 py-2 text-sm font-medium text-good transition hover:border-good hover:bg-good/30"
           >
             + Add Row
           </button>
           <button
             type="button"
             onClick={onChangeFile}
-            className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-100 transition hover:border-slate-500 hover:bg-slate-700"
+            className="rounded-xl border border-edge-strong bg-raised px-4 py-2 text-sm text-ink transition hover:border-edge-hover hover:bg-raised"
           >
             Change File
           </button>
           <button
             type="button"
             onClick={handleDownload}
-            className="rounded-xl border border-slate-700 bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-400"
+            className="rounded-xl border border-edge-strong bg-warn px-4 py-2 text-sm font-semibold text-on-accent transition hover:bg-warn/90"
           >
             Download
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-100 transition hover:border-slate-500 hover:bg-slate-700"
+            className="rounded-xl border border-edge-strong bg-raised px-4 py-2 text-sm text-ink transition hover:border-edge-hover hover:bg-raised"
           >
             Close
           </button>
@@ -280,18 +283,18 @@ export default function SpreadsheetView({ spreadsheet, onClose, onChangeFile, on
 
       {/* Editable mode indicator */}
       <div className="mb-2 flex items-center gap-2 px-1">
-        <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="text-xs font-mono text-emerald-400/80 tracking-wider uppercase">
+        <span className="inline-block h-2 w-2 rounded-full bg-good animate-pulse" />
+        <span className="text-xs font-mono text-good/80 tracking-wider uppercase">
           Edit Mode Active
         </span>
-        <span className="text-xs text-slate-500 ml-2">
+        <span className="text-xs text-ink-3 ml-2">
           Double-click or press Enter to edit • Tab to move • Escape to cancel
         </span>
       </div>
 
       {/* Spreadsheet table */}
       <div
-        className="flex-1 min-h-0 overflow-auto rounded-2xl border border-slate-800 bg-slate-950"
+        className="flex-1 min-h-0 overflow-auto rounded-2xl border border-edge bg-page"
         style={{ scrollbarColor: '#334155 #0f172a' }}
       >
         <table
@@ -377,20 +380,20 @@ export default function SpreadsheetView({ spreadsheet, onClose, onChangeFile, on
         </table>
 
         {displayRows.length === 0 && (
-          <div className="flex items-center justify-center py-20 text-slate-500 text-sm font-mono">
+          <div className="flex items-center justify-center py-20 text-ink-3 text-sm font-mono">
             No data. Click "+ Add Row" to begin.
           </div>
         )}
       </div>
 
       {/* Footer status bar */}
-      <div className="mt-2 flex items-center justify-between px-2 text-xs font-mono text-slate-500">
+      <div className="mt-2 flex items-center justify-between px-2 text-xs font-mono text-ink-3">
         <span>
           {rowData.length} row{rowData.length !== 1 ? 's' : ''} •{' '}
           {spreadsheet.columnDefs.length} column{spreadsheet.columnDefs.length !== 1 ? 's' : ''}
         </span>
         {selectedCell && (
-          <span className="text-slate-400">
+          <span className="text-ink-2">
             Cell {String.fromCharCode(65 + getColumnIndex(selectedCell.field))}
             {selectedCell.rowIndex + 1}
           </span>

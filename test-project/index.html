@@ -4,7 +4,33 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>test-project</title>
+    <title>mStock Trading Dashboard</title>
+    <script>
+      /*
+       * Set the theme BEFORE the first paint.
+       *
+       * React only applies the theme class once it mounts, which is a frame or
+       * two after the browser has already painted the page. For anyone on the
+       * dark theme that showed a white flash on every load — the exact thing
+       * that makes a dark app unpleasant to look at.
+       *
+       * Deliberately inline and blocking: a deferred or external script would
+       * run too late to help. It duplicates the small amount of logic in
+       * ThemeContext's initialiser, which is the accepted cost of this fix.
+       */
+      (function () {
+        try {
+          var saved = null;
+          try { saved = localStorage.getItem('mstock_theme'); } catch (e) { /* storage blocked */ }
+          var dark = saved === 'dark'
+            || (saved !== 'light' && !window.matchMedia('(prefers-color-scheme: light)').matches);
+          document.documentElement.classList.toggle('dark', dark);
+          document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+        } catch (e) {
+          /* Never let the theme break the page: without this it just loads light. */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

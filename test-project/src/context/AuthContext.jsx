@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo } from 'react'
+import { AuthContext } from './auth'
+import { endServerSession } from '../lib/accountApi'
 
-const AuthContext = createContext(null)
 const STORAGE_KEY = 'mstock_session'
 
 // sessionStorage throws in some privacy modes — never let that take the app down.
@@ -20,9 +21,9 @@ const storage = {
 }
 
 /**
- * AuthProvider — wraps the app and exposes:
+ * AuthProvider — wraps the app and exposes (via useAuth in ./auth.js):
  *   isAuthenticated  boolean, derived from authData
- *   authData         { accessToken, apiKey, session } | null
+ *   authData         { accessToken, apiKey, session, appSession } | null
  *   login(data)      call after a successful OTP verify
  *   logout()         clears everything and forces re-login
  *
@@ -47,9 +48,19 @@ export function AuthProvider({ children }) {
   }, [])
 
   const logout = useCallback(() => {
+    // Tell the backend first, so it stops this session's runs, drops the broker
+    // credentials from its in-memory vault and marks the session ended. Clearing
+    // sessionStorage alone would only hide a session that was still trading.
+    //
+    // Deliberately not awaited, and its failure is swallowed: signing out must
+    // happen in the UI even if the backend is unreachable. The server has two
+    // other ways to stop those runs — the heartbeat sweeper and session expiry.
+    const session = authData?.appSession
+    if (session) endServerSession(session).catch(() => {})
+
     setAuthData(null)
     storage.clear()
-  }, [])
+  }, [authData])
 
   const value = useMemo(
     () => ({ isAuthenticated: Boolean(authData?.accessToken), authData, login, logout }),
@@ -57,10 +68,4 @@ export function AuthProvider({ children }) {
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within <AuthProvider>')
-  return ctx
 }

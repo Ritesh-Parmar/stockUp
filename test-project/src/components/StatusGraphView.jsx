@@ -26,14 +26,22 @@ export default function StatusGraphView({ onClose }) {
 
   const maxValue = Math.max(...data.map((d) => d.value), 1)
 
-  // Animate bars on mount and data change
+  // Grow the bars from zero. The initial zeroes come from useState above, and a
+  // refresh re-zeroes them in handleRefresh — so the effect only has to schedule
+  // the grow, keeping setState inside the timer callback rather than running it
+  // synchronously on every render pass.
   useEffect(() => {
-    setAnimatedHeights(data.map(() => 0))
     const timer = setTimeout(() => {
       setAnimatedHeights(data.map((d) => (d.value / maxValue) * 100))
     }, 50)
     return () => clearTimeout(timer)
   }, [data, maxValue])
+
+  const handleRefresh = () => {
+    const next = generateData()
+    setData(next)
+    setAnimatedHeights(next.map(() => 0))
+  }
 
   // Draw the line chart on canvas
   useEffect(() => {
@@ -117,25 +125,25 @@ export default function StatusGraphView({ onClose }) {
   }, [data, maxValue])
 
   return (
-    <div className="flex h-full flex-col rounded-3xl border border-slate-700 bg-slate-900/90 p-4 shadow-xl shadow-slate-950/40">
+    <div className="flex h-full flex-col rounded-3xl border border-edge-strong bg-panel/90 p-4 shadow-xl shadow-shade/20">
       {/* Header */}
-      <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl bg-slate-950 px-4 py-3 text-slate-100">
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl bg-page px-4 py-3 text-ink">
         <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Diagnostics</p>
-          <h3 className="text-lg font-semibold text-slate-100">System Status</h3>
+          <p className="text-xs uppercase tracking-[0.35em] text-ink-3">Diagnostics</p>
+          <h3 className="text-lg font-semibold text-ink">System Status</h3>
         </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() => setData(generateData())}
-            className="rounded-xl border border-blue-700/50 bg-blue-600/20 px-4 py-2 text-sm font-medium text-blue-400 transition hover:border-blue-500 hover:bg-blue-600/30"
+            onClick={handleRefresh}
+            className="rounded-xl border border-info/50 bg-info/20 px-4 py-2 text-sm font-medium text-info transition hover:border-info hover:bg-info/30"
           >
             Refresh Data
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-100 transition hover:border-slate-500 hover:bg-slate-700"
+            className="rounded-xl border border-edge-strong bg-raised px-4 py-2 text-sm text-ink transition hover:border-edge-hover hover:bg-raised"
           >
             Close
           </button>
@@ -145,10 +153,10 @@ export default function StatusGraphView({ onClose }) {
       {/* Charts grid */}
       <div className="flex-1 min-h-0 grid grid-rows-2 gap-4 overflow-auto">
         {/* Bar Chart */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5 flex flex-col">
+        <div className="rounded-2xl border border-edge bg-page p-5 flex flex-col">
           <div className="flex items-center gap-2 mb-4">
-            <span className="inline-block h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-            <span className="text-xs font-mono uppercase tracking-wider text-slate-400">
+            <span className="inline-block h-2 w-2 rounded-full bg-warn animate-pulse" />
+            <span className="text-xs font-mono uppercase tracking-wider text-ink-2">
               Weekly Activity — Bar Chart
             </span>
           </div>
@@ -193,7 +201,7 @@ export default function StatusGraphView({ onClose }) {
                   </div>
 
                   {/* Label */}
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-ink-3">
                     {d.label}
                   </span>
                 </div>
@@ -203,10 +211,10 @@ export default function StatusGraphView({ onClose }) {
         </div>
 
         {/* Line Chart */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-950 p-5 flex flex-col">
+        <div className="rounded-2xl border border-edge bg-page p-5 flex flex-col">
           <div className="flex items-center gap-2 mb-2">
-            <span className="inline-block h-2 w-2 rounded-full bg-blue-400 animate-pulse" />
-            <span className="text-xs font-mono uppercase tracking-wider text-slate-400">
+            <span className="inline-block h-2 w-2 rounded-full bg-info animate-pulse" />
+            <span className="text-xs font-mono uppercase tracking-wider text-ink-2">
               Weekly Trend — Line Chart
             </span>
           </div>
@@ -217,10 +225,10 @@ export default function StatusGraphView({ onClose }) {
       </div>
 
       {/* Footer */}
-      <div className="mt-3 flex items-center justify-between px-2 text-xs font-mono text-slate-500">
+      <div className="mt-3 flex items-center justify-between px-2 text-xs font-mono text-ink-3">
         <span>7 data points • Updated just now</span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-good" />
           All systems nominal
         </span>
       </div>

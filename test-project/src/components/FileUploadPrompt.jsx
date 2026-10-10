@@ -8,15 +8,15 @@ export default function FileUploadPrompt({ onFileSelected }) {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col items-center justify-center gap-6 rounded-3xl border border-slate-700 bg-slate-900/80 p-10 text-center shadow-lg shadow-slate-950/30">
-      <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Upload spreadsheet</p>
-      <h2 className="text-2xl font-semibold text-slate-100">Select a .xlsx file</h2>
-      <p className="max-w-xl text-sm leading-6 text-slate-400">
+    <div className="mx-auto flex w-full max-w-2xl flex-col items-center justify-center gap-6 rounded-3xl border border-edge-strong bg-panel/80 p-10 text-center shadow-lg shadow-shade/15">
+      <p className="text-xs uppercase tracking-[0.35em] text-ink-3">Upload spreadsheet</p>
+      <h2 className="text-2xl font-semibold text-ink">Select a .xlsx file</h2>
+      <p className="max-w-xl text-sm leading-6 text-ink-2">
         Upload an Excel workbook and edit it directly inside the main content area. The first row becomes column headers.
       </p>
       <label
         htmlFor="xlsx-upload"
-        className="inline-flex cursor-pointer items-center justify-center rounded-xl bg-amber-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-400"
+        className="inline-flex cursor-pointer items-center justify-center rounded-xl bg-warn px-6 py-3 text-sm font-semibold text-on-accent transition hover:bg-warn/90"
       >
         Choose file
       </label>
